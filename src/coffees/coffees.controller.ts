@@ -13,6 +13,7 @@ import {
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto/update-coffee.dto';
+import { log } from 'console';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -24,14 +25,17 @@ export class CoffeesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coffeesService.findOne(id);
+  findOne(@Param('id') id: number) {
+    return this.coffeesService.findOne('' + id);
   }
 
   @Post()
-  @HttpCode(HttpStatus.GONE)
-  create(@Body() CreateCoffeeDto: CreateCoffeeDto) {
-    return this.coffeesService.create(CreateCoffeeDto);
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() createCoffeeDto: CreateCoffeeDto) {
+    console.log(createCoffeeDto instanceof CreateCoffeeDto);
+
+    this.coffeesService.create(CreateCoffeeDto);
+    return CreateCoffeeDto;
   }
 
   @Patch(':id')
