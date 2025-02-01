@@ -14,14 +14,15 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto/update-coffee.dto';
 import { log } from 'console';
+import { Coffee } from './entities/coffee.entity';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/pagination-query.dto';
 
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
   @Get()
-  findAll(@Query() paginationQuery) {
-    // const { limit, offset } = paginationQuery;
-    return this.coffeesService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.coffeesService.findAll(paginationQuery);
   }
 
   @Get(':id')
@@ -31,11 +32,9 @@ export class CoffeesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createCoffeeDto: CreateCoffeeDto) {
-    console.log(createCoffeeDto instanceof CreateCoffeeDto);
-
-    this.coffeesService.create(CreateCoffeeDto);
-    return CreateCoffeeDto;
+  create(@Body() createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
+    const newCoffee = this.coffeesService.create(createCoffeeDto);
+    return newCoffee;
   }
 
   @Patch(':id')
