@@ -8,6 +8,7 @@ import { Event } from 'src/events/entities/event.entity';
 import { COFFEE_BRANDS } from './coffees.constants';
 import { ConfigModule } from '@nestjs/config';
 import coffeesConfig from 'src/config/coffees.config';
+import { CustomParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import coffeesConfig from 'src/config/coffees.config';
       useFactory: async () => ['buddy brew', 'nescafe'],
       scope: Scope.TRANSIENT,
     },
+    CustomParseIntPipe,
   ],
   exports: [CoffeesService],
 })

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
@@ -9,6 +9,9 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import appConfig from './config/app.config';
+import { APP_PIPE } from '@nestjs/core';
+import { CommonModule } from './common/common.module';
+import { CustomParseIntPipe } from './common/pipes/parse-int/parse-int.pipe';
 
 @Module({
   imports: [
@@ -26,6 +29,7 @@ import appConfig from './config/app.config';
       }),
     }),
     ConfigModule.forRoot({
+      isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_HOST: Joi.string().required(),
         DATABASE_PORT: Joi.number().default(5432),
@@ -35,8 +39,9 @@ import appConfig from './config/app.config';
     CoffeesModule,
     CoffeeRatingModule,
     DatabaseModule,
+    CommonModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CustomParseIntPipe],
 })
 export class AppModule {}
