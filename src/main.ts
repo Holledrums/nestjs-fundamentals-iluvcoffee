@@ -10,7 +10,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      transform: true,
+      transform: false,
       forbidNonWhitelisted: true,
       transformOptions: {
         enableImplicitConversion: true,
@@ -19,10 +19,10 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(
-    new WrapResponseInterceptor(),
-    new TimeoutInterceptor(),
-  );
+  // app.useGlobalInterceptors(
+  //   new WrapResponseInterceptor(),
+  //   new TimeoutInterceptor(),
+  // );
   await app.listen(3000);
 }
 bootstrap();

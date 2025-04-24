@@ -13,7 +13,10 @@ export class WrapResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => ({ data })),
-      catchError((err) => throwError(() => err)), // ❗ Fehler weiterreichen!
+      catchError((err) => {
+        console.error('Interceptor catchError:', err.message);
+        throw err;
+      }),
     );
   }
 }

@@ -25,27 +25,34 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/paginati
 import { REQUEST } from '@nestjs/core';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { CustomParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
+import { Protocol } from 'src/common/decorators/protocol.decorator';
 @Controller('coffees')
 export class CoffeesController {
   constructor(
     private readonly coffeesService: CoffeesService,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
-  @UsePipes(ValidationPipe)
+  // @UsePipes(ValidationPipe)
   @Get()
   @Public()
   findAll(
+    @Protocol() protocol: string,
     @Query() paginationQuery: PaginationQueryDto,
     @Headers('authorization') _authHeader: string,
   ) {
+    console.log('Request protocol:', protocol);
+
     // await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.coffeesService.findAll(paginationQuery);
   }
   @Public()
   @Get(':id')
-  findOne(@Param('id', CustomParseIntPipe) id: number) {
+  findOne(@Param('id', new CustomParseIntPipe()) id: number) {
     console.log('coffeeID: ', id);
-    return { message: `Du hast die ID ${id} eingegeben.` };
+    return this.coffeesService.findOne(id).catch((err) => {
+      console.error('Error in findOne:', err);
+      throw new NotFoundException(`Coffee #${id} not found`);
+    });
   }
 
   @Post()
@@ -64,7 +71,7 @@ export class CoffeesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.coffeesService.remove(id);
   }
 }
