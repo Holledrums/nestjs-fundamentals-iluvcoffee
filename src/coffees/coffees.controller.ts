@@ -26,6 +26,8 @@ import { REQUEST } from '@nestjs/core';
 import { Public } from 'src/common/decorators/public/public.decorator';
 import { CustomParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
 import { Protocol } from 'src/common/decorators/protocol.decorator';
+import { ApiForbiddenResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+@ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
   constructor(
@@ -34,6 +36,7 @@ export class CoffeesController {
   ) {}
   // @UsePipes(ValidationPipe)
   @Get()
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Public()
   findAll(
     @Protocol() protocol: string,
